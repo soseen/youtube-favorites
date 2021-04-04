@@ -1,5 +1,8 @@
 @import './Variables.scss';
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 .App {
   background-color: $main-color;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
 }

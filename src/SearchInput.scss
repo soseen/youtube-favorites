@@ -1,29 +1,24 @@
 @import './Variables.scss';
 
 .search-input-wrapper {
-    // width: 100%;
     margin: auto;
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    // padding: 40px;
     background-color: $main-color;
+    padding: 20px;
+    border-bottom: 2px solid #cacaca;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
+    justify-content: flex-start;
+
+    .search-input {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
     .input {
         margin-right: 5px;
-        width: 300px;
-    
+        border-radius: 2px;
     }
-    // button {
-    //     background-color: $secondary-color;
-    //     color: #fff;
-    //     padding: 10px;
-    //     border: none;
-    //     border-radius: 2px;
-    //     padding: 10px 30px;
-    // }
+    button {
+        border-radius: 2px;
+    }
 }

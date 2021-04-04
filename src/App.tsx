@@ -2,18 +2,26 @@ import './App.scss';
 import { useState } from 'react';
 // import { useQuery, QueryClient, QueryClientProvider } from 'react-query'
 import SearchInput from './SearchInput';
+import Videos from './Videos'
 import 'bootstrap/dist/css/bootstrap.css';
 
 export type Video = {
-  id: number,
-  title: string
+  id: string,
+  title: string,
+  description: string,
+  viewCount: number,
+  likeCount: number,
+  dislikeCount: number,
+  thumbnail: string,
+  addedOn: Date,
+  favorite: boolean
 };
 
 // const queryClient = new QueryClient();
 
 const App = () => {
 
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<Video[] | []>([]);
 
   const addVideo = (videoToAdd: Video) => {
     setVideos(
@@ -21,9 +29,12 @@ const App = () => {
     );
   }
 
+  console.log(videos);
+
   return (
     <div className="App">
-      <SearchInput addVideo={addVideo}/>
+      <SearchInput videos={videos} setVideos={setVideos}/>
+      <Videos videos={videos}/>
     </div>
   );
 }

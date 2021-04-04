@@ -42,26 +42,124 @@ type SearchYoutubeResponse = {
     }
 };
 
+type videoYoutubeResponse = {
+    etag: string,
+    items: {
+        etag: string,
+        id: string,
+        kind: string,
+        snippet: {
+            categoryId: string,
+            channelId: string,
+            channelTitle: string,
+            defaultAudioLanguage: string,
+            defaultLanguage: string,
+            description: string,
+            liveBroadcastContent: string,
+            localized: {
+                description: string,
+                title: string
+            },
+            publishedAt: Date,
+            thumbnails: {
+                default: {
+                    height: number,
+                    url: string,
+                    width: number
+                },
+                high: {
+                    height: number,
+                    url: string,
+                    width: number
+                },
+                maxres: {
+                    height: number,
+                    url: string,
+                    width: number
+                },
+                medium: {
+                    height: number,
+                    url: string,
+                    width: number
+                },
+                standard: {
+                    height: number,
+                    url: string,
+                    width: number
+                }
+            },
+            title: string
+        },
+        statistics: {
+            commentCount: string,
+            dislikeCount: string,
+            favoriteCount: string,
+            likeCount: string,
+            viewCount: string
+        }
+    } []
+}
+
 type Props = {
-    addVideo: (videoToAdd: Video) => void
+    setVideos: (videoToAdd: Video[]) => void,
+    videos: Video[]
 };
 
   
 
-const SearchInput: React.FC<Props> = ({addVideo}) => {
+const SearchInput: React.FC<Props> = ({setVideos, videos}) => {
 
     const [videoQuery, setVideoQuery] = useState<string>('');
 
     const getVideo = async (videoQuery: string): Promise<void> => {
 
-        const IdResponse = await searchYoutube.get<SearchYoutubeResponse>('/search', {
-            params: {
-                q: videoQuery
-            }       
-        })
+        let videoId: string | null = null;
 
-        console.log(IdResponse.data.items[0].id.videoId);
+        try {
+            const searchResponse = await searchYoutube.get<SearchYoutubeResponse>('/search', {
+                params: {
+                    part: 'snippet',
+                    q: videoQuery
+                }       
+            })
 
+           videoId = searchResponse.data.items[0].id.videoId;
+
+        } catch (error) {
+            console.log(error)
+        }
+
+        const isDuplicate = videos.find(video => video.id === videoId);
+
+        console.log(isDuplicate)
+
+        if (videoId && !isDuplicate) {
+            try {
+                const videoResponse = await searchYoutube.get<videoYoutubeResponse>('/videos', {
+                    params: {
+                        id: videoId,
+                        part: 'statistics, snippet, contentDetails',
+                    }       
+                })
+                console.log(videoResponse.data);
+                setVideos([...videos, {
+                    id: videoResponse.data.items[0].id,
+                    title: videoResponse.data.items[0].snippet.title,
+                    description: videoResponse.data.items[0].snippet.description,
+                    viewCount: parseInt(videoResponse.data.items[0].statistics.viewCount),
+                    likeCount: parseInt(videoResponse.data.items[0].statistics.likeCount),
+                    dislikeCount: parseInt(videoResponse.data.items[0].statistics.dislikeCount),
+                    thumbnail: videoResponse.data.items[0].snippet.thumbnails.medium.url,
+                    addedOn: new Date(),
+                    favorite: false
+                }]
+                )
+            } catch (error) {
+                console.log(error)
+            }    
+        } else {
+            alert('Video not found');
+        }
     }
 
     // const { data, isLoading, error } = useQuery<Video>(
@@ -75,15 +173,17 @@ const SearchInput: React.FC<Props> = ({addVideo}) => {
 
     return(
         <div className='search-input-wrapper'>
-                        <Input 
-                            type="email" 
-                            name="email" 
-                            className="input mr-10" 
-                            placeholder="video URL" 
-                            value={videoQuery} 
-                            onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
-                        />             
-                        <Button color="primary" onClick = {() => getVideo(videoQuery)}>Search</Button>
+            <div className='search-input'>
+                <Input 
+                    type="email" 
+                    name="email" 
+                    className="input mr-10" 
+                    placeholder="video URL" 
+                    value={videoQuery} 
+                    onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
+                />             
+                <Button color="primary" className='btn btn-primary' onClick = {() => getVideo(videoQuery)}>Search</Button>
+            </div>       
         </div>
 
     )
