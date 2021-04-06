@@ -3,10 +3,12 @@ import {Video} from './App'
 import VideoItem from './VideoItem';
 
 type Props = {
-    videos: Video[] | []
+    videos: Video[],
+    handleVideoFavorite: (videoItem: Video) => void,
+    removeVideo: (videoItem: Video) => void
 }
 
-const Videos: React.FC<Props> = ({videos}) => {
+const Videos: React.FC<Props> = ({videos, handleVideoFavorite, removeVideo}) => {
 
     console.log('------------------------------');
     console.log(videos);
@@ -15,7 +17,7 @@ const Videos: React.FC<Props> = ({videos}) => {
         <div className='videos-container'>
         {videos.map((videoDetails: Video) => {
             return(
-                <VideoItem videoDetails={videoDetails} />
+                <VideoItem key={videoDetails.id} videoDetails={videoDetails} handleVideoFavorite={handleVideoFavorite} removeVideo={removeVideo}/>
             )
         }) 
         }
