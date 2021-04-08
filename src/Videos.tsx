@@ -3,21 +3,22 @@ import {Video} from './App'
 import VideoItem from './VideoItem';
 
 type Props = {
-    videos: Video[],
+    videosToDisplay: Video[],
     handleVideoFavorite: (videoItem: Video) => void,
-    removeVideo: (videoItem: Video) => void
+    removeVideo: (videoItem: Video) => void,
+    setDisplayVideo: (displayVideo: {
+        isModalDisplayed: boolean,
+        video?: Video
+    }) => void
 }
 
-const Videos: React.FC<Props> = ({videos, handleVideoFavorite, removeVideo}) => {
-
-    console.log('------------------------------');
-    console.log(videos);
+const Videos: React.FC<Props> = ({videosToDisplay, handleVideoFavorite, removeVideo, setDisplayVideo}) => {
 
     return(
         <div className='videos-container'>
-        {videos.map((videoDetails: Video) => {
+        {videosToDisplay.map((videoDetails: Video) => {
             return(
-                <VideoItem key={videoDetails.id} videoDetails={videoDetails} handleVideoFavorite={handleVideoFavorite} removeVideo={removeVideo}/>
+                <VideoItem key={videoDetails.id} videoDetails={videoDetails} handleVideoFavorite={handleVideoFavorite} removeVideo={removeVideo} setDisplayVideo={setDisplayVideo}/>
             )
         }) 
         }

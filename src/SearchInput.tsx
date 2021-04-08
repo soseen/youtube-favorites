@@ -1,9 +1,12 @@
 import './SearchInput.scss'
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input} from 'reactstrap'
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Form} from 'reactstrap'
+import { FaYoutube, FaVimeo} from 'react-icons/fa'
 import { Video } from './App'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { searchYoutube, searchVimeo } from './axios';
 import { useQuery } from 'react-query';
+// import templateVideos from './template/templateVideos.json';
+import template from './template/template';
 
 
 type SearchYoutubeResponse = {
@@ -210,19 +213,30 @@ type videoVimeoResponse = {
 }
 
 type Props = {
+    isNewestFirst: boolean,
+    setIsNewestFirst: (isNewestFirst: boolean) => void,
+    setIsFavoritesDisplayed: (isFavoritesDisplayed: boolean) => void,
+    videos: Video[],
     setVideos: (newVideos: Video[]) => void,
-    videos: Video[]
+    setIsFetchingData: (isFetchingData: boolean) => void
 };
 
   
 
-const SearchInput: React.FC<Props> = ({setVideos, videos}) => {
+const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, setIsFavoritesDisplayed, setVideos, videos, setIsFetchingData}) => {
 
     const [videoQuery, setVideoQuery] = useState<string>('');
-    const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-    const [selectedSource, setSelectedSource] = useState<string>('youtube')
+    const [dropdownOpen, setDropdownOpen] = useState<{source: boolean, favoritesFilter: boolean}>({source: false, favoritesFilter: false});
+    const [selectedSource, setSelectedSource] = useState<string>('youtube');
+
+    const submitQuery = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        getVideo(videoQuery);
+    }
 
     const getVideo = async (videoQuery: string): Promise<void> => {
+
+        setIsFetchingData(true);
 
         if(selectedSource === 'youtube') {
             let videoId: string | null = null;
@@ -243,9 +257,13 @@ const SearchInput: React.FC<Props> = ({setVideos, videos}) => {
 
             const isDuplicate = videos.find(video => video.id === videoId);
 
-            console.log(isDuplicate)
+            if(isDuplicate) {
+                setIsFetchingData(false);
+                alert('Video already exists');
+                return
+            }
 
-            if (videoId && !isDuplicate) {
+            if (videoId) {
                 try {
                     const videoResponse = await searchYoutube.get<videoYoutubeResponse>('/videos', {
                         params: {
@@ -254,21 +272,24 @@ const SearchInput: React.FC<Props> = ({setVideos, videos}) => {
                         }       
                     })
                     console.log(videoResponse.data);
-                    setVideos([...videos, {
+
+                    let videoToAdd: Video = {
                         id: videoResponse.data.items[0].id,
                         title: videoResponse.data.items[0].snippet.title,
                         description: videoResponse.data.items[0].snippet.description,
                         viewCount: parseInt(videoResponse.data.items[0].statistics.viewCount),
                         likeCount: parseInt(videoResponse.data.items[0].statistics.likeCount),
                         dislikeCount: parseInt(videoResponse.data.items[0].statistics.dislikeCount),
-                        thumbnail: videoResponse.data.items[0].snippet.thumbnails.maxres.url,
+                        thumbnail: videoResponse.data.items[0].snippet.thumbnails.high.url,
                         addedOn: new Date(),
                         favorite: false,
-                        source: 'youtube'
-                    }]
-                    )
+                        source: 'youtube',
+                        watchURL: `https://www.youtube.com/watch?v=${videoResponse.data.items[0].id}`
+                    }
+                    setVideos([...videos, videoToAdd]);
                 } catch (error) {
-                    console.log(error)
+                    console.log(error);
+                    alert('Video not found');
                 }    
             } else {
                 alert('Video not found');
@@ -280,32 +301,44 @@ const SearchInput: React.FC<Props> = ({setVideos, videos}) => {
 
             if(match){
 
-                let videoId = match[2]
-                const videoResponse = await searchVimeo.get<videoVimeoResponse>(`/videos/${videoId}`)
+                let videoId = match[2];
 
-                console.log(videoResponse.data);
+                const isDuplicate = videos.find(video => video.id === videoId);
 
-                setVideos([...videos, {
-                    id: videoId,
-                    title: videoResponse.data.name,
-                    description: videoResponse.data.description,
-                    likeCount: videoResponse.data.metadata.connections.likes.total,
-                    thumbnail: videoResponse.data.pictures.sizes? videoResponse.data.pictures.sizes[4].link : '',
-                    addedOn: new Date(),
-                    favorite: false,
-                    source: 'vimeo'
-                }])
+                if(isDuplicate) {
+                    setIsFetchingData(false);
+                    alert('Video already exists');
+                    return
+                }
 
+                try {
+                    const videoResponse = await searchVimeo.get<videoVimeoResponse>(`/videos/${videoId}`)
+
+                    console.log(videoResponse.data);
+
+                    let videoToAdd: Video = {
+                        id: videoId,
+                        title: videoResponse.data.name,
+                        description: videoResponse.data.description,
+                        likeCount: videoResponse.data.metadata.connections.likes.total,
+                        thumbnail: videoResponse.data.pictures.sizes? videoResponse.data.pictures.sizes[3].link : '',
+                        addedOn: new Date(),
+                        favorite: false,
+                        source: 'vimeo',
+                        watchURL: `https://vimeo.com/${videoId}`
+                    }
+                    setVideos([...videos, videoToAdd]);
+                } catch (error) {
+                    console.log(error);
+                    alert('Video not found');
+                }
+                
             } else {
                 alert('Video not found');
             }
         }
+        setIsFetchingData(false);
     }
-
-    // const { data, isLoading, error } = useQuery<Video>(
-    //     ['products', {videoQuery: videoQuery}],
-    //     getVideo
-    //   )
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
         setVideoQuery((e.target as HTMLInputElement).value)
@@ -314,26 +347,51 @@ const SearchInput: React.FC<Props> = ({setVideos, videos}) => {
     return(
         <div className='search-input-wrapper'>
             <div className='search-input'>
-                <Dropdown className='dropdown' isOpen={dropdownOpen} toggle={() => setDropdownOpen(!dropdownOpen)}>
+                <Form inline onSubmit={(e: React.FormEvent<HTMLFormElement>) => submitQuery(e)}>
+                    <Dropdown className='dropdown' isOpen={dropdownOpen.source} toggle={() => setDropdownOpen({...dropdownOpen, source: !dropdownOpen.source})}>
+                        <DropdownToggle className='bg-primary'>
+                        {selectedSource === 'youtube' &&
+                            <FaYoutube />
+                        }
+                        {selectedSource === 'vimeo' &&
+                            <FaVimeo />
+                        } 
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem header>Source</DropdownItem>
+                            <DropdownItem onClick={() => setSelectedSource('youtube')}>Youtube</DropdownItem>
+                            <DropdownItem onClick={() => setSelectedSource('vimeo')}>Vimeo</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                    <Input 
+                        type="text" 
+                        name="video-input" 
+                        className="input mr-10"
+                        placeholder="video URL" 
+                        value={videoQuery} 
+                        onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
+                    />             
+                    <Button color="primary" className='btn btn-primary' onClick = {() => getVideo(videoQuery)}>Search</Button>
+                </Form>
+            </div>
+            <div className='search-filters'>
+                <Dropdown className='dropdown' isOpen={dropdownOpen.favoritesFilter} toggle={() => setDropdownOpen({...dropdownOpen, favoritesFilter: !dropdownOpen.favoritesFilter})}>
                     <DropdownToggle caret className='bg-primary'>
-                    {selectedSource}
+                        Display
                     </DropdownToggle>
                     <DropdownMenu>
-                        <DropdownItem header>Source</DropdownItem>
-                        <DropdownItem onClick={() => setSelectedSource('youtube')}>Youtube</DropdownItem>
-                        <DropdownItem onClick={() => setSelectedSource('vimeo')}>Vimeo</DropdownItem>
+                        <DropdownItem header>Display</DropdownItem>
+                        <DropdownItem onClick={() => setIsFavoritesDisplayed(false)}>All</DropdownItem>
+                        <DropdownItem onClick={() => setIsFavoritesDisplayed(true)}>Favorites</DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
-                <Input 
-                    type="email" 
-                    name="email" 
-                    className="input mr-10" 
-                    placeholder="video URL" 
-                    value={videoQuery} 
-                    onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
-                />             
-                <Button color="primary" className='btn btn-primary' onClick = {() => getVideo(videoQuery)}>Search</Button>
-            </div>       
+                <Button color="primary" className='btn btn-primary' onClick = {() => setVideos(template)}>Load Template</Button>
+                {isNewestFirst? 
+                <Button color="primary" className='btn btn-primary' onClick = {() => setIsNewestFirst(false)}>Oldest</Button>
+                :
+                <Button color="primary" className='btn btn-primary' onClick = {() => setIsNewestFirst(true)}>Newest</Button>
+                }
+            </div>
         </div>
 
     )

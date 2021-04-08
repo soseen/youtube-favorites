@@ -8,10 +8,14 @@ import Videos from './Videos';
 type Props = {
     videoDetails: Video,
     handleVideoFavorite: (videoItem: Video) => void
-    removeVideo: (videoItem: Video) => void
+    removeVideo: (videoItem: Video) => void,
+    setDisplayVideo: (displayVideo: {
+        isModalDisplayed: boolean,
+        video?: Video
+    }) => void
 }
 
-const VideoItem: React.FC<Props> = ({videoDetails, handleVideoFavorite, removeVideo}) => {
+const VideoItem: React.FC<Props> = ({videoDetails, handleVideoFavorite, removeVideo, setDisplayVideo}) => {
 
     const [isPlayButton, setIsPlayButton] = useState<boolean>(false);
     // const [isFavoriteButton, setIsFavoriteButton] = useState<boolean>(false);
@@ -19,9 +23,9 @@ const VideoItem: React.FC<Props> = ({videoDetails, handleVideoFavorite, removeVi
 
     return(
             <div className='video-item-container'>
-                <Row>
+                <Row className='row'>
                     <Col xs='12' md='4' lg='2'>
-                        <div className='video-thumbnail' onMouseOver={() => setIsPlayButton(true)} onMouseLeave={() => setIsPlayButton(false)}>
+                        <div className='video-thumbnail' onMouseOver={() => setIsPlayButton(true)} onMouseLeave={() => setIsPlayButton(false)} onClick={() => setDisplayVideo({isModalDisplayed: true, video: videoDetails})}>
                             <img src={videoDetails.thumbnail}></img>
                             <IoMdPlay className={isPlayButton? 'play-button' : 'play-button hidden'}/>
                         </div>
