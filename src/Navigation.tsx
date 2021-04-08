@@ -1,218 +1,17 @@
-import './SearchInput.scss'
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Form} from 'reactstrap'
+import './Navigation.scss'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Form} from 'reactstrap'
 import { FaYoutube, FaVimeo} from 'react-icons/fa'
-import { IoArrowDown, IoArrowUp, IoGrid, IoList} from "react-icons/io5";
+import { IoGrid, IoList} from "react-icons/io5";
 import { IoIosArrowDown, IoIosArrowUp    } from "react-icons/io";
 import { Video } from './App'
+import { SearchYoutubeResponse } from './types/SearchYoutubeResponse'
+import { VideoYoutubeResponse } from './types/VideoYoutubeResponse'
+import { VideoVimeoResponse } from './types/VideoVimeoResponse'
 import React, { useState } from 'react';
 import { searchYoutube, searchVimeo } from './axios';
-import { useQuery } from 'react-query';
-// import templateVideos from './template/templateVideos.json';
 import template from './template/template';
 
 
-type SearchYoutubeResponse = {
-    etag: string,
-    items: {
-        kind: string,
-        id: {
-            videoId: string
-        }
-    } [],
-    kind: string,
-    snippet: {
-        channelId: string,
-        channelTitle: string,
-        description: string,
-        liveBroadcastContent: string,
-        publishTime: string,
-        publishedAt: string,
-        thumbnails: {
-            default: {
-                height: number,
-                url: string,
-                width: number
-            },
-            high: {
-                height: number,
-                url: string,
-                width: number
-            },
-            medium: {
-                height: number,
-                url: string,
-                width: number
-            }
-        }
-    }
-};
-
-type videoYoutubeResponse = {
-    etag: string,
-    items: {
-        etag: string,
-        id: string,
-        kind: string,
-        snippet: {
-            categoryId: string,
-            channelId: string,
-            channelTitle: string,
-            defaultAudioLanguage: string,
-            defaultLanguage: string,
-            description: string,
-            liveBroadcastContent: string,
-            localized: {
-                description: string,
-                title: string
-            },
-            publishedAt: Date,
-            thumbnails: {
-                default: {
-                    height: number,
-                    url: string,
-                    width: number
-                },
-                high: {
-                    height: number,
-                    url: string,
-                    width: number
-                },
-                maxres: {
-                    height: number,
-                    url: string,
-                    width: number
-                },
-                medium: {
-                    height: number,
-                    url: string,
-                    width: number
-                },
-                standard: {
-                    height: number,
-                    url: string,
-                    width: number
-                }
-            },
-            title: string
-        },
-        statistics: {
-            commentCount: string,
-            dislikeCount: string,
-            favoriteCount: string,
-            likeCount: string,
-            viewCount: string
-        }
-    } []
-}
-
-type videoVimeoResponse = {
-    app: {
-        name: string,
-        uri: string
-    },
-    created_time: Date,
-    description: string,
-    duration: number,
-    height: number,
-    is_playable: boolean,
-    language?: string,
-    license?: string,
-    link: string,
-    metadata: {
-        connections: {
-            comments: {
-                uri: string,
-                total: number
-            },
-            credits: {
-                uri: string,
-                total: number
-            },
-            likes: {
-                uri: string,
-                total: number
-            },
-            pictures: {
-                uri: string,
-                total: number
-            }
-
-        }
-    },
-    name: string,
-    pictures: {
-        active: boolean,
-        default_picture: boolean,
-        resource_key: string,
-        sizes: [
-            {
-                height: number,
-                width: number,
-                link: string,
-                link_with_play_button: string
-            },
-            {
-                height: number,
-                width: number,
-                link: string,
-                link_with_play_button: string
-            },
-            {
-                height: number,
-                width: number,
-                link: string,
-                link_with_play_button: string
-            },
-            {
-                height: number,
-                width: number,
-                link: string,
-                link_with_play_button: string
-            },
-            {
-                height: number,
-                width: number,
-                link: string,
-                link_with_play_button: string
-            },
-            {
-                height: number,
-                width: number,
-                link: string,
-                link_with_play_button: string
-            },
-            {
-                height: number,
-                width: number,
-                link: string,
-                link_with_play_button: string
-            },
-            {
-                height: number,
-                width: number,
-                link: string,
-                link_with_play_button: string
-            }
-        ],
-    },
-    privacy: {
-        add: boolean,
-        comments: string,
-        download: boolean,
-        embed: string,
-        view: string
-    },
-    release_time: Date,
-    resource_key: string,
-    stats: {
-        plays: number | null
-    },
-    status: string,
-    tags: [],
-    type: string,
-    uri: string,
-    width: number
-}
 
 type Props = {
     isNewestFirst: boolean,
@@ -228,7 +27,7 @@ type Props = {
 
   
 
-const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavoritesDisplayed, setIsFavoritesDisplayed, isListView, setIsListView, setVideos, videos, setIsFetchingData}) => {
+const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavoritesDisplayed, setIsFavoritesDisplayed, isListView, setIsListView, setVideos, videos, setIsFetchingData}) => {
 
     const [videoQuery, setVideoQuery] = useState<string>('');
     const [dropdownOpen, setDropdownOpen] = useState<{source: boolean, favoritesFilter: boolean}>({source: false, favoritesFilter: false});
@@ -270,7 +69,7 @@ const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavori
 
             if (videoId) {
                 try {
-                    const videoResponse = await searchYoutube.get<videoYoutubeResponse>('/videos', {
+                    const videoResponse = await searchYoutube.get<VideoYoutubeResponse>('/videos', {
                         params: {
                             id: videoId,
                             part: 'statistics, snippet, contentDetails',
@@ -317,7 +116,7 @@ const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavori
                 }
 
                 try {
-                    const videoResponse = await searchVimeo.get<videoVimeoResponse>(`/videos/${videoId}`)
+                    const videoResponse = await searchVimeo.get<VideoVimeoResponse>(`/videos/${videoId}`)
 
                     console.log(videoResponse.data);
 
@@ -350,7 +149,7 @@ const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavori
     }
 
     return(
-        <div className='navigation'>
+        <div className='navigation-wrapper'>
             <div className='search-input-wrapper'>
                 <div className='search-input'>
                     <Form inline onSubmit={(e: React.FormEvent<HTMLFormElement>) => submitQuery(e)}>
@@ -377,27 +176,11 @@ const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavori
                             value={videoQuery} 
                             onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
                         />             
-                        <Button color="primary" className='btn btn-primary' onClick = {() => getVideo(videoQuery)}>Search</Button>
+                        {/* <Button color="primary" className='btn btn-primary' onClick = {() => getVideo(videoQuery)}>Search</Button> */}
                     </Form>
                 </div>
             </div>
             <div className='search-filters'>
-                    {/* <Dropdown className='dropdown' isOpen={dropdownOpen.favoritesFilter} toggle={() => setDropdownOpen({...dropdownOpen, favoritesFilter: !dropdownOpen.favoritesFilter})}>
-                        <DropdownToggle caret className='bg-primary'>
-                            Display
-                        </DropdownToggle>
-                        <DropdownMenu>
-                            <DropdownItem header>Display</DropdownItem>
-                            <DropdownItem onClick={() => setIsFavoritesDisplayed(false)}>All</DropdownItem>
-                            <DropdownItem onClick={() => setIsFavoritesDisplayed(true)}>Favorites</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                    <Button color="primary" className='btn btn-primary' onClick = {() => setVideos(template)}>Load Template</Button>
-                    {isNewestFirst? 
-                    <Button color="primary" className='btn btn-primary' onClick = {() => setIsNewestFirst(false)}>Oldest</Button>
-                    :
-                    <Button color="primary" className='btn btn-primary' onClick = {() => setIsNewestFirst(true)}>Newest</Button>
-                    } */}
                     <button className='load-template-button' onClick = {() => setVideos(template)}>Load Template</button>
                     <button className={isFavoritesDisplayed? 'favorites-button' : 'favorites-button button-selected'} onClick={() => setIsFavoritesDisplayed(false)}>All</button>
                     <button className={isFavoritesDisplayed? 'favorites-button button-selected' : 'favorites-button'} onClick={() => setIsFavoritesDisplayed(true)}>Favorites</button>
@@ -419,4 +202,4 @@ const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavori
     )
 }
 
-export default SearchInput;
+export default Navigation;

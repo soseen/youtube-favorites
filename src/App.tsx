@@ -2,7 +2,7 @@ import './App.scss';
 import { useMemo, useState } from 'react';
 import { Spinner } from 'reactstrap';
 // import { useQuery, QueryClient, QueryClientProvider } from 'react-query'
-import SearchInput from './SearchInput';
+import Navigation from './Navigation';
 import Videos from './Videos'
 import VideoModal from './VideoModal';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -29,10 +29,6 @@ const App = () => {
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
   const [isListView, setIsListView] = useState<boolean>(true);
   const [displayVideo, setDisplayVideo] = useState<{isModalDisplayed: boolean, video?: Video}>({isModalDisplayed: false});
-
-  console.log(videos);
-
-  console.log(new Date('2021-03-15'));
 
   const videosToDisplay: Video[] = useMemo(()=> {
 
@@ -81,7 +77,7 @@ const App = () => {
           <Spinner className='spinner' color='primary'/>
         </div>
       }
-      <SearchInput 
+      <Navigation 
         isNewestFirst={isNewestFirst} 
         setIsNewestFirst={setIsNewestFirst}
         isFavoritesDisplayed={isFavoritesDisplayed}
