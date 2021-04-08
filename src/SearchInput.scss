@@ -4,7 +4,7 @@
     margin: auto;
     background-color: $main-color;
     padding: 20px;
-    border-bottom: 2px solid #cacaca;
+    border-bottom: 1px solid #cacaca;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -12,17 +12,22 @@
 
     .search-input {
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
-        width: 100%;
-        margin-bottom: 10px;
+        // width: 100%;
+        // margin-bottom: 10px;
+        flex-wrap: nowrap;
+    }
+
+    .search-input > * {
+        flex-wrap: nowrap !important;
     }
 
     .input {
         margin-right: 5px;
         border-radius: 2px;
-        max-width: 300px;
     }
+
     button {
         border-radius: 2px;
         margin-right: 5px;
@@ -30,7 +35,7 @@
 
     .dropdown {
         button {
-            width: 100px;
+            min-width: 60px;
         }
     }
 
@@ -42,5 +47,67 @@
         button {
             width: 140px;
         }
+    }
+}
+
+.search-filters {
+    width: 100%;
+    padding: 10px 20px;
+    color: #fff;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 1.2rem;
+    border-radius: 2px;
+    background-color: #1b1b1b;
+
+    button {
+        outline: none;
+        background-color: #3f3f3f;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        color: #fff;
+        border: none;
+        padding: 8px;
+        border-radius: 2px;
+        font-size: 0.7rem;
+        min-width: 60px;
+
+        &:nth-child(2) {
+            margin-left: auto;
+        }
+
+        &:nth-child(3) {
+            margin-left: 5px;
+        }
+    }
+
+    .view-item{
+        padding: 2px 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 5px;
+        font-size: 0.9rem;
+        background-color: #3f3f3f;
+        border-radius: 2px;
+        cursor: pointer;
+        opacity: 1;
+    }
+
+    .view-item-selected {
+        opacity: 0.5;
+    }
+
+    .order-by-button {
+        margin-left: 5px;
+
+        svg {
+            margin-left: 5px;
+        }
+    }
+
+    .button-selected {
+        opacity: 0.5;
     }
 }

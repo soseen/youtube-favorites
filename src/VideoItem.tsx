@@ -1,7 +1,7 @@
 import './VideoItem.scss'
 import { Video } from './App';
 import { Container, Row, Col, Button } from 'reactstrap';
-import {IoMdThumbsUp, IoMdThumbsDown, IoMdHeart, IoMdHeartEmpty, IoIosHeartDislike, IoMdPlay, IoIosArrowDown, IoIosArrowUp, IoMdClose} from "react-icons/io";
+import {IoMdThumbsUp, IoMdThumbsDown, IoMdHeart, IoMdHeartEmpty, IoIosHeartDislike, IoMdPlay, IoMdClose} from "react-icons/io";
 import { useState } from 'react';
 import Videos from './Videos';
 

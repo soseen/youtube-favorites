@@ -27,7 +27,10 @@ const App = () => {
   const [isFavoritesDisplayed, setIsFavoritesDisplayed] = useState<boolean>(false);
   const [isNewestFirst, setIsNewestFirst] = useState<boolean>(true);
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
+  const [isListView, setIsListView] = useState<boolean>(true);
   const [displayVideo, setDisplayVideo] = useState<{isModalDisplayed: boolean, video?: Video}>({isModalDisplayed: false});
+
+  console.log(videos);
 
   console.log(new Date('2021-03-15'));
 
@@ -80,9 +83,13 @@ const App = () => {
       }
       <SearchInput 
         isNewestFirst={isNewestFirst} 
-        setIsNewestFirst={setIsNewestFirst} 
-        setIsFavoritesDisplayed={setIsFavoritesDisplayed} 
-        videos={videos} setVideos={setVideos} 
+        setIsNewestFirst={setIsNewestFirst}
+        isFavoritesDisplayed={isFavoritesDisplayed}
+        setIsFavoritesDisplayed={setIsFavoritesDisplayed}
+        isListView={isListView}
+        setIsListView={setIsListView}
+        videos={videos}
+        setVideos={setVideos} 
         setIsFetchingData={setIsFetchingData}
       />
       <Videos 

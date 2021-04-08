@@ -1,6 +1,8 @@
 import './SearchInput.scss'
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Form} from 'reactstrap'
 import { FaYoutube, FaVimeo} from 'react-icons/fa'
+import { IoArrowDown, IoArrowUp, IoGrid, IoList} from "react-icons/io5";
+import { IoIosArrowDown, IoIosArrowUp    } from "react-icons/io";
 import { Video } from './App'
 import React, { useState } from 'react';
 import { searchYoutube, searchVimeo } from './axios';
@@ -215,7 +217,10 @@ type videoVimeoResponse = {
 type Props = {
     isNewestFirst: boolean,
     setIsNewestFirst: (isNewestFirst: boolean) => void,
+    isFavoritesDisplayed: boolean
     setIsFavoritesDisplayed: (isFavoritesDisplayed: boolean) => void,
+    isListView: boolean,
+    setIsListView: (isListView: boolean) => void,
     videos: Video[],
     setVideos: (newVideos: Video[]) => void,
     setIsFetchingData: (isFetchingData: boolean) => void
@@ -223,7 +228,7 @@ type Props = {
 
   
 
-const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, setIsFavoritesDisplayed, setVideos, videos, setIsFetchingData}) => {
+const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavoritesDisplayed, setIsFavoritesDisplayed, isListView, setIsListView, setVideos, videos, setIsFetchingData}) => {
 
     const [videoQuery, setVideoQuery] = useState<string>('');
     const [dropdownOpen, setDropdownOpen] = useState<{source: boolean, favoritesFilter: boolean}>({source: false, favoritesFilter: false});
@@ -345,52 +350,69 @@ const SearchInput: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, setIsFav
     }
 
     return(
-        <div className='search-input-wrapper'>
-            <div className='search-input'>
-                <Form inline onSubmit={(e: React.FormEvent<HTMLFormElement>) => submitQuery(e)}>
-                    <Dropdown className='dropdown' isOpen={dropdownOpen.source} toggle={() => setDropdownOpen({...dropdownOpen, source: !dropdownOpen.source})}>
-                        <DropdownToggle className='bg-primary'>
-                        {selectedSource === 'youtube' &&
-                            <FaYoutube />
-                        }
-                        {selectedSource === 'vimeo' &&
-                            <FaVimeo />
-                        } 
-                        </DropdownToggle>
-                        <DropdownMenu>
-                            <DropdownItem header>Source</DropdownItem>
-                            <DropdownItem onClick={() => setSelectedSource('youtube')}>Youtube</DropdownItem>
-                            <DropdownItem onClick={() => setSelectedSource('vimeo')}>Vimeo</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
-                    <Input 
-                        type="text" 
-                        name="video-input" 
-                        className="input mr-10"
-                        placeholder="video URL" 
-                        value={videoQuery} 
-                        onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
-                    />             
-                    <Button color="primary" className='btn btn-primary' onClick = {() => getVideo(videoQuery)}>Search</Button>
-                </Form>
+        <div className='navigation'>
+            <div className='search-input-wrapper'>
+                <div className='search-input'>
+                    <Form inline onSubmit={(e: React.FormEvent<HTMLFormElement>) => submitQuery(e)}>
+                        <Dropdown className='dropdown' isOpen={dropdownOpen.source} toggle={() => setDropdownOpen({...dropdownOpen, source: !dropdownOpen.source})}>
+                            <DropdownToggle className='bg-primary'>
+                            {selectedSource === 'youtube' &&
+                                <FaYoutube />
+                            }
+                            {selectedSource === 'vimeo' &&
+                                <FaVimeo />
+                            } 
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem header>Source</DropdownItem>
+                                <DropdownItem onClick={() => setSelectedSource('youtube')}>Youtube</DropdownItem>
+                                <DropdownItem onClick={() => setSelectedSource('vimeo')}>Vimeo</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                        <Input 
+                            type="text" 
+                            name="video-input" 
+                            className="input mr-10"
+                            placeholder="video URL" 
+                            value={videoQuery} 
+                            onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
+                        />             
+                        <Button color="primary" className='btn btn-primary' onClick = {() => getVideo(videoQuery)}>Search</Button>
+                    </Form>
+                </div>
             </div>
             <div className='search-filters'>
-                <Dropdown className='dropdown' isOpen={dropdownOpen.favoritesFilter} toggle={() => setDropdownOpen({...dropdownOpen, favoritesFilter: !dropdownOpen.favoritesFilter})}>
-                    <DropdownToggle caret className='bg-primary'>
-                        Display
-                    </DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem header>Display</DropdownItem>
-                        <DropdownItem onClick={() => setIsFavoritesDisplayed(false)}>All</DropdownItem>
-                        <DropdownItem onClick={() => setIsFavoritesDisplayed(true)}>Favorites</DropdownItem>
-                    </DropdownMenu>
-                </Dropdown>
-                <Button color="primary" className='btn btn-primary' onClick = {() => setVideos(template)}>Load Template</Button>
-                {isNewestFirst? 
-                <Button color="primary" className='btn btn-primary' onClick = {() => setIsNewestFirst(false)}>Oldest</Button>
-                :
-                <Button color="primary" className='btn btn-primary' onClick = {() => setIsNewestFirst(true)}>Newest</Button>
-                }
+                    {/* <Dropdown className='dropdown' isOpen={dropdownOpen.favoritesFilter} toggle={() => setDropdownOpen({...dropdownOpen, favoritesFilter: !dropdownOpen.favoritesFilter})}>
+                        <DropdownToggle caret className='bg-primary'>
+                            Display
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem header>Display</DropdownItem>
+                            <DropdownItem onClick={() => setIsFavoritesDisplayed(false)}>All</DropdownItem>
+                            <DropdownItem onClick={() => setIsFavoritesDisplayed(true)}>Favorites</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                    <Button color="primary" className='btn btn-primary' onClick = {() => setVideos(template)}>Load Template</Button>
+                    {isNewestFirst? 
+                    <Button color="primary" className='btn btn-primary' onClick = {() => setIsNewestFirst(false)}>Oldest</Button>
+                    :
+                    <Button color="primary" className='btn btn-primary' onClick = {() => setIsNewestFirst(true)}>Newest</Button>
+                    } */}
+                    <button className='load-template-button' onClick = {() => setVideos(template)}>Load Template</button>
+                    <button className={isFavoritesDisplayed? 'favorites-button' : 'favorites-button button-selected'} onClick={() => setIsFavoritesDisplayed(false)}>All</button>
+                    <button className={isFavoritesDisplayed? 'favorites-button button-selected' : 'favorites-button'} onClick={() => setIsFavoritesDisplayed(true)}>Favorites</button>
+                    {isNewestFirst &&
+                            <button className='order-by-button' onClick={()=> setIsNewestFirst(false)}>Order<IoIosArrowDown /></button>
+                        }
+                        {!isNewestFirst &&
+                            <button className='order-by-button' onClick={()=> setIsNewestFirst(true)}>Order<IoIosArrowUp /></button>
+                        }
+                    <div className={isListView? 'view-item view-item-selected' : 'view-item'} onClick={() => setIsListView(true)}>
+                        <IoList/>
+                    </div>
+                    <div className={isListView? 'view-item' : 'view-item view-item-selected'} onClick={() => setIsListView(false)}>
+                        <IoGrid/>
+                    </div>
             </div>
         </div>
 
