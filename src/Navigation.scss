@@ -2,8 +2,8 @@
 
 .search-input-wrapper {
     margin: auto;
-    background-color: $main-color;
     padding: 20px;
+    background-color: $main-color;
     border-bottom: 1px solid #cacaca;
     display: flex;
     flex-direction: column;
@@ -33,16 +33,6 @@
     .dropdown {
         button {
             min-width: 60px;
-        }
-    }
-
-    .search-filters {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
-
-        button {
-            width: 140px;
         }
     }
 }
@@ -106,5 +96,15 @@
 
     .button-selected {
         opacity: 0.5;
+    }
+}
+
+@media (max-width: 600px) {
+    .search-input-wrapper {
+        padding: 10px;
+    }
+
+    .search-filters {
+        padding: 10px;
     }
 }

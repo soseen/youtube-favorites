@@ -93,6 +93,7 @@ const App = () => {
         handleVideoFavorite={handleVideoFavorite} 
         removeVideo={removeVideo}
         setDisplayVideo={setDisplayVideo}
+        isListView={isListView}
       />
       <VideoModal displayVideo={displayVideo} setDisplayVideo={setDisplayVideo} />
     </div>
