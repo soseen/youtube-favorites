@@ -23,7 +23,7 @@ const VideoItem: React.FC<Props> = ({videoDetails, handleVideoFavorite, removeVi
             <div className='video-item-container'>
                 {isListView?
                     <div className='video-item-list'>
-                        <Row className='row'>
+                        <Row>
                             <Col xs='12' md='4' lg='2'>
                                 <div className='video-thumbnail' onMouseOver={() => setIsPlayButton(true)} onMouseLeave={() => setIsPlayButton(false)} onClick={() => setDisplayVideo({isModalDisplayed: true, video: videoDetails})}>
                                     <img src={videoDetails.thumbnail} alt='thumbnail'></img>
