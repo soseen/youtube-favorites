@@ -1,5 +1,9 @@
 @import './Variables.scss';
 
+.navigation-wrapper {
+    margin-bottom: 10px;
+}
+
 .search-input-wrapper {
     margin: auto;
     padding: 20px;
@@ -11,6 +15,7 @@
     align-items: flex-start;
 
     .search-input {
+        width: 100%;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -20,14 +25,22 @@
         flex-wrap: nowrap !important;
     }
 
+    .form-inline {
+        width: 100%;
+    }
+
     .input {
         margin-right: 5px;
         border-radius: 2px;
+        width: auto;
+        min-width: 190px;
+        font-size: 1rem;
     }
 
     button {
         border-radius: 2px;
         margin-right: 5px;
+        font-size: 1rem;
     }
 
     .dropdown {
@@ -55,16 +68,42 @@
         align-items: center;
         color: #fff;
         border: none;
-        padding: 8px;
+        padding: 6px;
         border-radius: 2px;
-        min-width: 60px;
+        min-width: 50px;
 
-        &:nth-child(2) {
-            margin-left: auto;
+        &:nth-child(1) {
+            margin-right: auto;
         }
 
-        &:nth-child(3) {
+        &:nth-child(n+2) {
             margin-left: 5px;
+        }
+    }
+
+    .delete-videos-btn {
+
+        svg {
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 2px;
+
+            &:hover {
+                color: $accent-color;
+            }
+        }
+        
+    }
+
+    .delete-videos-btn-inactive {
+        opacity: 0.5;
+
+        svg {
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 2px;
         }
     }
 
@@ -101,6 +140,15 @@
 @media (max-width: 600px) {
     .search-input-wrapper {
         padding: 10px;
+
+        .input {
+            min-width: 100px;
+            font-size: 0.8rem;
+        }
+        
+        button {
+            font-size: 0.8rem;
+        }
     }
 
     .search-filters {

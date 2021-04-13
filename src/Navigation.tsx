@@ -1,8 +1,8 @@
 import './Navigation.scss'
-import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Form} from 'reactstrap'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownToggle, Input, Form, Button} from 'reactstrap'
 import { FaYoutube, FaVimeo} from 'react-icons/fa'
 import { IoGrid, IoList} from "react-icons/io5";
-import { IoIosArrowDown, IoIosArrowUp    } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp, IoIosTrash} from "react-icons/io";
 import { Video } from './App'
 import { SearchYoutubeResponse } from './types/SearchYoutubeResponse'
 import { VideoYoutubeResponse } from './types/VideoYoutubeResponse'
@@ -10,6 +10,7 @@ import { VideoVimeoResponse } from './types/VideoVimeoResponse'
 import React, { useState } from 'react';
 import { searchYoutube, searchVimeo } from './axios';
 import template from './template/template';
+import { format, formatISO } from 'date-fns';
 
 
 
@@ -22,16 +23,18 @@ type Props = {
     setIsListView: (isListView: boolean) => void,
     videos: Video[],
     setVideos: (newVideos: Video[]) => void,
-    setIsFetchingData: (isFetchingData: boolean) => void
+    setIsFetchingData: (isFetchingData: boolean) => void,
+    setIsDeleteVideosModalOpen: (isDeleteVideosModalOpen: boolean) => void
 };
 
   
 
-const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavoritesDisplayed, setIsFavoritesDisplayed, isListView, setIsListView, setVideos, videos, setIsFetchingData}) => {
+const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavoritesDisplayed, setIsFavoritesDisplayed, isListView, setIsListView, setVideos, videos, setIsFetchingData, setIsDeleteVideosModalOpen}) => {
 
     const [videoQuery, setVideoQuery] = useState<string>('');
     const [dropdownOpen, setDropdownOpen] = useState<{source: boolean, favoritesFilter: boolean}>({source: false, favoritesFilter: false});
     const [selectedSource, setSelectedSource] = useState<string>('youtube');
+
 
     const submitQuery = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -75,7 +78,6 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
                             part: 'statistics, snippet, contentDetails',
                         }       
                     })
-                    console.log(videoResponse.data);
 
                     let videoToAdd: Video = {
                         id: videoResponse.data.items[0].id,
@@ -85,7 +87,8 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
                         likeCount: parseInt(videoResponse.data.items[0].statistics.likeCount),
                         dislikeCount: parseInt(videoResponse.data.items[0].statistics.dislikeCount),
                         thumbnail: videoResponse.data.items[0].snippet.thumbnails.high.url,
-                        addedOn: new Date(),
+                        // addedOn: format(new Date(), 'yyyy-MM-dd'),
+                        addedOn: formatISO(new Date(), { representation: 'date' }),
                         favorite: false,
                         source: 'youtube',
                         watchURL: `https://www.youtube.com/watch?v=${videoResponse.data.items[0].id}`
@@ -100,12 +103,12 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
             }
         } else if (selectedSource === 'vimeo') {
 
-            let regExp = /(vimeo.com\/|^)(\d+)($|\/)/;
+            let regExp = /(vimeo.com\/|^)(.*?)(\d{9})($|\/)/;
             let match = videoQuery.match(regExp);
 
-            if(match){
+            let videoId = match?.find(value => /^\d{9}/.test(value));
 
-                let videoId = match[2];
+            if(videoId){
 
                 const isDuplicate = videos.find(video => video.id === videoId);
 
@@ -118,15 +121,13 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
                 try {
                     const videoResponse = await searchVimeo.get<VideoVimeoResponse>(`/videos/${videoId}`)
 
-                    console.log(videoResponse.data);
-
                     let videoToAdd: Video = {
                         id: videoId,
                         title: videoResponse.data.name,
                         description: videoResponse.data.description,
                         likeCount: videoResponse.data.metadata.connections.likes.total,
                         thumbnail: videoResponse.data.pictures.sizes? videoResponse.data.pictures.sizes[3].link : '',
-                        addedOn: new Date(),
+                        addedOn: formatISO(new Date(), { representation: 'date' }),
                         favorite: false,
                         source: 'vimeo',
                         watchURL: `https://vimeo.com/${videoId}`
@@ -146,6 +147,10 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
         setVideoQuery((e.target as HTMLInputElement).value)
+    }
+
+    const deleteVideos = () => {
+        videos && videos.length > 0 ? setIsDeleteVideosModalOpen(true) : setIsDeleteVideosModalOpen(false)
     }
 
     return(
@@ -172,16 +177,17 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
                             type="text" 
                             name="video-input" 
                             className="input mr-10"
-                            placeholder="video URL" 
+                            placeholder="video URL/ID" 
                             value={videoQuery} 
                             onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
-                        />             
-                        {/* <Button color="primary" className='btn btn-primary' onClick = {() => getVideo(videoQuery)}>Search</Button> */}
+                        />
+                        {/* <IoIosTrash className={videos && videos.length > 0 ? 'delete-videos-icon' : 'delete-videos-icon-inactive'} onClick={()=> setIsDeleteVideosModalOpen(true)} />        */}
+                        <Button color="primary" className='btn btn-primary' onClick = {()=> setVideos(template)}>Template</Button>
                     </Form>
                 </div>
             </div>
             <div className='search-filters'>
-                    <button className='load-template-button' onClick = {() => setVideos(template)}>Load Template</button>
+                    <button className={videos && videos.length > 0 ? 'delete-videos-btn' : 'delete-videos-btn-inactive'} onClick={()=> deleteVideos()}><IoIosTrash/></button>
                     <button className={isFavoritesDisplayed? 'favorites-button' : 'favorites-button button-selected'} onClick={() => setIsFavoritesDisplayed(false)}>All</button>
                     <button className={isFavoritesDisplayed? 'favorites-button button-selected' : 'favorites-button'} onClick={() => setIsFavoritesDisplayed(true)}>Favorites</button>
                     {isNewestFirst &&

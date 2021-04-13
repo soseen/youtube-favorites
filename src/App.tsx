@@ -1,11 +1,14 @@
 import './App.scss';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Spinner } from 'reactstrap';
 // import { useQuery, QueryClient, QueryClientProvider } from 'react-query'
 import Navigation from './Navigation';
 import Videos from './Videos'
 import VideoModal from './VideoModal';
+import DeleteVideosModal from './DeleteVideosModal';
 import 'bootstrap/dist/css/bootstrap.css';
+import { compareAsc, compareDesc, isBefore, parseISO } from 'date-fns';
+import { parseJSON } from 'date-fns/esm';
 
 export type Video = {
   id: string,
@@ -15,7 +18,7 @@ export type Video = {
   likeCount: number,
   dislikeCount?: number | undefined,
   thumbnail: string,
-  addedOn: Date,
+  addedOn: string,
   favorite: boolean,
   source: string,
   watchURL: string
@@ -23,36 +26,41 @@ export type Video = {
 
 const App = () => {
 
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<Video[]>(JSON.parse(localStorage.getItem('videosData') || '[]'));
   const [isFavoritesDisplayed, setIsFavoritesDisplayed] = useState<boolean>(false);
   const [isNewestFirst, setIsNewestFirst] = useState<boolean>(true);
   const [isFetchingData, setIsFetchingData] = useState<boolean>(false);
   const [isListView, setIsListView] = useState<boolean>(true);
   const [displayVideo, setDisplayVideo] = useState<{isModalDisplayed: boolean, video?: Video}>({isModalDisplayed: false});
+  const [isDeleteVideosModalOpen, setIsDeleteVideosModalOpen] = useState<boolean>(false);
+
+
+
+  useEffect(()=> {
+    localStorage.setItem('videosData', JSON.stringify(videos));
+  },[videos])
+
+  console.log(videos);
+
 
   const videosToDisplay: Video[] = useMemo(()=> {
 
-    console.log(isNewestFirst);
-    
+
     let newVideos: Video[] = videos;
 
-    console.log(newVideos.filter(video => video.favorite))
 
     if(isFavoritesDisplayed) {
       newVideos = newVideos.filter(video => video.favorite)
     }
 
-    if(isNewestFirst) {
-      newVideos.sort((a, b) => b.addedOn.getTime() - a.addedOn.getTime())
-    } else {
-      newVideos.sort((a, b) => a.addedOn.getTime() - b.addedOn.getTime())
-    }
+    isNewestFirst?
+    newVideos.sort((a, b) => compareDesc(parseISO(a.addedOn),parseISO(b.addedOn)))
+    // : newVideos.sort((a, b) =>  Date.parse(a.addedOn) - Date.parse(b.addedOn))
+    : newVideos.sort((a, b) => compareAsc(parseISO(a.addedOn),parseISO(b.addedOn)))
 
     return newVideos
-  },[videos, isFavoritesDisplayed, isNewestFirst])
-  // const updateDisplayedVideos = useMemo(() => {
-  //   setVideosToDisplay([...videosToDisplay, videos[videos.length - 1]])
-  // },[videos]);
+  },[videos, isFavoritesDisplayed, isNewestFirst]);
+
 
   const handleVideoFavorite = (videoItem: Video) =>
     setVideos(
@@ -87,6 +95,7 @@ const App = () => {
         videos={videos}
         setVideos={setVideos} 
         setIsFetchingData={setIsFetchingData}
+        setIsDeleteVideosModalOpen={setIsDeleteVideosModalOpen}
       />
       <Videos 
         videosToDisplay={videosToDisplay} 
@@ -96,6 +105,7 @@ const App = () => {
         isListView={isListView}
       />
       <VideoModal displayVideo={displayVideo} setDisplayVideo={setDisplayVideo} />
+      <DeleteVideosModal isDeleteVideosModalOpen={isDeleteVideosModalOpen} setIsDeleteVideosModalOpen={setIsDeleteVideosModalOpen} setVideos={setVideos}/>
     </div>
   );
 }

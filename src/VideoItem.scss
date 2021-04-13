@@ -1,4 +1,6 @@
 
+@import './Variables.scss';
+
 .video-item-container {
     width: 100%;
     font-family: 'Roboto', sans-serif;
@@ -50,7 +52,7 @@
         }
 
         .source-youtube {
-            background-color: #f04d4d;
+            background-color: $accent-color;
         }
 
         .source-vimeo {
@@ -78,7 +80,7 @@
         align-items: center;
         font-size: 0.9rem;
         margin-top: auto;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
 
         .stat-box {
             display: flex;
@@ -86,7 +88,7 @@
             margin-right: 20px;
 
             svg {
-                color: #f04d4d;
+                color: $accent-color;
             }
 
             p {
@@ -113,7 +115,7 @@
     cursor: pointer;
 
     svg:hover {
-        color: #f04d4d;
+        color: $accent-color;
     }
 }
 .play-button {
@@ -136,7 +138,20 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    position: relative;
     border-bottom: 1px solid #3f3f3f;
+
+    // &::after {
+    //     content: '';
+    //     position: absolute;
+    //     width: 90%;
+    //     height: 1px;
+    //     padding-left: 155px;
+    //     bottom: 0;
+    //     left: 50%;
+    //     transform: translate(-50%);
+    //     background-color: #3f3f3f;
+    // }
 
     .video-thumbnail {
         margin-bottom: 20px;
@@ -145,9 +160,11 @@
     }
 
     img {
-        border: 1px solid #3f3f3f;
         width: 100%;
         height: auto;
+        border: 1px solid #3f3f3f;
+        object-fit: cover;
+        // height: 180px;
     }
 
     .video-info-container {
@@ -181,7 +198,7 @@
         img {
             border: 1px solid #3f3f3f;
             object-fit: cover;
-            height: 150px;
+            height: 110px;
             width: 100%;
         }
     }
