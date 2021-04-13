@@ -10,7 +10,7 @@ import { VideoVimeoResponse } from './types/VideoVimeoResponse'
 import React, { useState } from 'react';
 import { searchYoutube, searchVimeo } from './axios';
 import template from './template/template';
-import { format, formatISO } from 'date-fns';
+import { formatISO } from 'date-fns';
 
 
 
@@ -149,6 +149,19 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
         setVideoQuery((e.target as HTMLInputElement).value)
     }
 
+    const loadTemplate = () => {
+
+        let updatedVideos: Video[] = videos;
+
+        template.forEach(templateVideo => {
+            if(!updatedVideos.find(video => video.id === templateVideo.id)){
+               updatedVideos = [...updatedVideos, templateVideo]
+            }
+        });
+
+        setVideos(updatedVideos);
+    }
+
     const deleteVideos = () => {
         videos && videos.length > 0 ? setIsDeleteVideosModalOpen(true) : setIsDeleteVideosModalOpen(false)
     }
@@ -181,8 +194,7 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
                             value={videoQuery} 
                             onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
                         />
-                        {/* <IoIosTrash className={videos && videos.length > 0 ? 'delete-videos-icon' : 'delete-videos-icon-inactive'} onClick={()=> setIsDeleteVideosModalOpen(true)} />        */}
-                        <Button color="primary" className='btn btn-primary' onClick = {()=> setVideos(template)}>Template</Button>
+                        <Button color="primary" className='btn btn-primary' onClick = {()=> loadTemplate()}>Template</Button>
                     </Form>
                 </div>
             </div>

@@ -30,17 +30,22 @@
     }
 
     .input {
-        margin-right: 5px;
+        margin-right: auto;
         border-radius: 2px;
         width: auto;
         min-width: 190px;
         font-size: 1rem;
+        margin: 0 5px;
     }
 
     button {
         border-radius: 2px;
-        margin-right: 5px;
+
         font-size: 1rem;
+
+        &:nth-child(3) {
+            margin-left: auto;
+        }
     }
 
     .dropdown {
@@ -83,28 +88,22 @@
 
     .delete-videos-btn {
 
-        svg {
         color: #fff;
         font-size: 1rem;
         cursor: pointer;
-        border-radius: 2px;
 
-            &:hover {
-                color: $accent-color;
-            }
+
+        &:hover svg{
+            color: $accent-color;
         }
         
     }
 
     .delete-videos-btn-inactive {
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
         opacity: 0.5;
-
-        svg {
-            color: #fff;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 2px;
-        }
     }
 
     .view-item{

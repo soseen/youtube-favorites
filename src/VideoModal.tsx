@@ -1,7 +1,6 @@
 import { Video } from './App'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import ReactPlayer from 'react-player'
-import './VideoModal.scss'
 
 type Props = {
     displayVideo: {

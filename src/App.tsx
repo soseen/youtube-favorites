@@ -7,8 +7,7 @@ import Videos from './Videos'
 import VideoModal from './VideoModal';
 import DeleteVideosModal from './DeleteVideosModal';
 import 'bootstrap/dist/css/bootstrap.css';
-import { compareAsc, compareDesc, isBefore, parseISO } from 'date-fns';
-import { parseJSON } from 'date-fns/esm';
+import { compareAsc, compareDesc, parseISO } from 'date-fns';
 
 export type Video = {
   id: string,
@@ -40,14 +39,9 @@ const App = () => {
     localStorage.setItem('videosData', JSON.stringify(videos));
   },[videos])
 
-  console.log(videos);
-
-
   const videosToDisplay: Video[] = useMemo(()=> {
 
-
     let newVideos: Video[] = videos;
-
 
     if(isFavoritesDisplayed) {
       newVideos = newVideos.filter(video => video.favorite)
@@ -55,7 +49,6 @@ const App = () => {
 
     isNewestFirst?
     newVideos.sort((a, b) => compareDesc(parseISO(a.addedOn),parseISO(b.addedOn)))
-    // : newVideos.sort((a, b) =>  Date.parse(a.addedOn) - Date.parse(b.addedOn))
     : newVideos.sort((a, b) => compareAsc(parseISO(a.addedOn),parseISO(b.addedOn)))
 
     return newVideos
@@ -104,8 +97,15 @@ const App = () => {
         setDisplayVideo={setDisplayVideo}
         isListView={isListView}
       />
-      <VideoModal displayVideo={displayVideo} setDisplayVideo={setDisplayVideo} />
-      <DeleteVideosModal isDeleteVideosModalOpen={isDeleteVideosModalOpen} setIsDeleteVideosModalOpen={setIsDeleteVideosModalOpen} setVideos={setVideos}/>
+      <VideoModal 
+        displayVideo={displayVideo} 
+        setDisplayVideo={setDisplayVideo} 
+      />
+      <DeleteVideosModal 
+        isDeleteVideosModalOpen={isDeleteVideosModalOpen} 
+        setIsDeleteVideosModalOpen={setIsDeleteVideosModalOpen} 
+        setVideos={setVideos}
+      />
     </div>
   );
 }

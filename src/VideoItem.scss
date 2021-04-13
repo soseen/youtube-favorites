@@ -94,7 +94,6 @@
             p {
                 margin: 0;
                 margin-left: 5px;
-                // font-weight: bolder;
                 color: #fff;
             }
         }
@@ -140,18 +139,6 @@
     justify-content: center;
     position: relative;
     border-bottom: 1px solid #3f3f3f;
-
-    // &::after {
-    //     content: '';
-    //     position: absolute;
-    //     width: 90%;
-    //     height: 1px;
-    //     padding-left: 155px;
-    //     bottom: 0;
-    //     left: 50%;
-    //     transform: translate(-50%);
-    //     background-color: #3f3f3f;
-    // }
 
     .video-thumbnail {
         margin-bottom: 20px;

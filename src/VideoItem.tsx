@@ -76,8 +76,7 @@ const VideoItem: React.FC<Props> = ({videoDetails, handleVideoFavorite, removeVi
                                     <h4>{videoDetails.title}</h4>
                                     <div className='video-tags'>
                                         <p className={`source-${videoDetails.source}`}>{videoDetails.source}</p>
-                                        {/* <p>{Date.parse(videoDetails.addedOn.toISOString().slice(0, 10)}</p> */}
-                                        <p>{Date.parse(videoDetails.addedOn)}</p>
+                                        <p>{videoDetails.addedOn}</p>
                                     </div>
                                 </div>
                                 <div className='video-stats'>
