@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/youtube-favorites/static/css/main.4f24366e.chunk.css",
-    "main.js": "/youtube-favorites/static/js/main.d93ee0d7.chunk.js",
-    "main.js.map": "/youtube-favorites/static/js/main.d93ee0d7.chunk.js.map",
+    "main.css": "/youtube-favorites/static/css/main.deccd3b9.chunk.css",
+    "main.js": "/youtube-favorites/static/js/main.a6c53212.chunk.js",
+    "main.js.map": "/youtube-favorites/static/js/main.a6c53212.chunk.js.map",
     "runtime-main.js": "/youtube-favorites/static/js/runtime-main.6f15394c.js",
     "runtime-main.js.map": "/youtube-favorites/static/js/runtime-main.6f15394c.js.map",
     "static/css/2.ef9168ec.chunk.css": "/youtube-favorites/static/css/2.ef9168ec.chunk.css",
-    "static/js/2.b763d03d.chunk.js": "/youtube-favorites/static/js/2.b763d03d.chunk.js",
-    "static/js/2.b763d03d.chunk.js.map": "/youtube-favorites/static/js/2.b763d03d.chunk.js.map",
+    "static/js/2.f92c29de.chunk.js": "/youtube-favorites/static/js/2.f92c29de.chunk.js",
+    "static/js/2.f92c29de.chunk.js.map": "/youtube-favorites/static/js/2.f92c29de.chunk.js.map",
     "index.html": "/youtube-favorites/index.html",
     "static/css/2.ef9168ec.chunk.css.map": "/youtube-favorites/static/css/2.ef9168ec.chunk.css.map",
-    "static/css/main.4f24366e.chunk.css.map": "/youtube-favorites/static/css/main.4f24366e.chunk.css.map",
-    "static/js/2.b763d03d.chunk.js.LICENSE.txt": "/youtube-favorites/static/js/2.b763d03d.chunk.js.LICENSE.txt"
+    "static/css/main.deccd3b9.chunk.css.map": "/youtube-favorites/static/css/main.deccd3b9.chunk.css.map",
+    "static/js/2.f92c29de.chunk.js.LICENSE.txt": "/youtube-favorites/static/js/2.f92c29de.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.6f15394c.js",
     "static/css/2.ef9168ec.chunk.css",
-    "static/js/2.b763d03d.chunk.js",
-    "static/css/main.4f24366e.chunk.css",
-    "static/js/main.d93ee0d7.chunk.js"
+    "static/js/2.f92c29de.chunk.js",
+    "static/css/main.deccd3b9.chunk.css",
+    "static/js/main.a6c53212.chunk.js"
   ]
 }
