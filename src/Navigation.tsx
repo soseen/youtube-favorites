@@ -163,7 +163,11 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
     }
 
     const deleteVideos = () => {
-        videos && videos.length > 0 ? setIsDeleteVideosModalOpen(true) : setIsDeleteVideosModalOpen(false)
+        if(videos && videos.length > 0) {
+            setIsDeleteVideosModalOpen(true)
+        } else {
+            setIsDeleteVideosModalOpen(false)
+        }
     }
 
     return(
@@ -171,7 +175,7 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
             <div className='search-input-wrapper'>
                 <div className='search-input'>
                     <Form inline onSubmit={(e: React.FormEvent<HTMLFormElement>) => submitQuery(e)}>
-                        <Dropdown className='dropdown' isOpen={dropdownOpen.source} toggle={() => setDropdownOpen({...dropdownOpen, source: !dropdownOpen.source})}>
+                        <Dropdown title='source' className='dropdown' isOpen={dropdownOpen.source} toggle={() => setDropdownOpen({...dropdownOpen, source: !dropdownOpen.source})}>
                             <DropdownToggle className='bg-primary'>
                             {selectedSource === 'youtube' &&
                                 <FaYoutube />
@@ -194,26 +198,27 @@ const Navigation: React.FC<Props> = ({isNewestFirst, setIsNewestFirst, isFavorit
                             value={videoQuery} 
                             onChange={(e: React.FormEvent<HTMLInputElement>) => handleChange(e)}
                         />
-                        <Button color="primary" className='btn btn-primary' onClick = {()=> loadTemplate()}>Template</Button>
+                        <Button color="primary" title='search' className='btn btn-primary' onClick = {() => getVideo(videoQuery)}>Search</Button>
+                        <Button color="primary" title='load template' className='btn btn-primary' onClick = {()=> loadTemplate()}>Template</Button>
                     </Form>
                 </div>
             </div>
             <div className='search-filters'>
-                    <button className={videos && videos.length > 0 ? 'delete-videos-btn' : 'delete-videos-btn-inactive'} onClick={()=> deleteVideos()}><IoIosTrash/></button>
-                    <button className={isFavoritesDisplayed? 'favorites-button' : 'favorites-button button-selected'} onClick={() => setIsFavoritesDisplayed(false)}>All</button>
-                    <button className={isFavoritesDisplayed? 'favorites-button button-selected' : 'favorites-button'} onClick={() => setIsFavoritesDisplayed(true)}>Favorites</button>
+                    <button title='delete all' className={videos && videos.length > 0 ? 'delete-videos-btn' : 'delete-videos-btn-inactive'} onClick={()=> deleteVideos()}><IoIosTrash/></button>
+                    <button title='display all' className={isFavoritesDisplayed? 'favorites-button' : 'favorites-button button-selected'} onClick={() => setIsFavoritesDisplayed(false)}>All</button>
+                    <button title='display favorites only' className={isFavoritesDisplayed? 'favorites-button button-selected' : 'favorites-button'} onClick={() => setIsFavoritesDisplayed(true)}>Favorites</button>
                     {isNewestFirst &&
-                            <button className='order-by-button' onClick={()=> setIsNewestFirst(false)}>Order<IoIosArrowDown /></button>
+                            <button title='date desc' className='order-by-button' onClick={()=> setIsNewestFirst(false)}>Order<IoIosArrowDown /></button>
                         }
                         {!isNewestFirst &&
-                            <button className='order-by-button' onClick={()=> setIsNewestFirst(true)}>Order<IoIosArrowUp /></button>
+                            <button title='date asc' className='order-by-button' onClick={()=> setIsNewestFirst(true)}>Order<IoIosArrowUp /></button>
                         }
-                    <div className={isListView? 'view-item view-item-selected' : 'view-item'} onClick={() => setIsListView(true)}>
+                    <button title='list view' className={isListView? 'view-item view-item-selected' : 'view-item'} onClick={() => setIsListView(true)}>
                         <IoList/>
-                    </div>
-                    <div className={isListView? 'view-item' : 'view-item view-item-selected'} onClick={() => setIsListView(false)}>
+                    </button>
+                    <button title='grid view' className={isListView? 'view-item' : 'view-item view-item-selected'} onClick={() => setIsListView(false)}>
                         <IoGrid/>
-                    </div>
+                    </button>
             </div>
         </div>
 

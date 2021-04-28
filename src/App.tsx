@@ -1,7 +1,6 @@
 import './App.scss';
 import { useEffect, useMemo, useState } from 'react';
 import { Spinner } from 'reactstrap';
-// import { useQuery, QueryClient, QueryClientProvider } from 'react-query'
 import Navigation from './Navigation';
 import Videos from './Videos'
 import VideoModal from './VideoModal';
@@ -48,8 +47,8 @@ const App = () => {
     }
 
     isNewestFirst?
-    newVideos.sort((a, b) => compareDesc(parseISO(a.addedOn),parseISO(b.addedOn)))
-    : newVideos.sort((a, b) => compareAsc(parseISO(a.addedOn),parseISO(b.addedOn)))
+    newVideos = newVideos.sort((a, b) => compareDesc(parseISO(a.addedOn),parseISO(b.addedOn)))
+    : newVideos = newVideos.sort((a, b) => compareAsc(parseISO(a.addedOn),parseISO(b.addedOn)))
 
     return newVideos
   },[videos, isFavoritesDisplayed, isNewestFirst]);
@@ -65,9 +64,7 @@ const App = () => {
   const removeVideo = (videoItem: Video) => {
 
     setVideos(
-      videos.reduce<Video[]>((newVideos, video) => 
-        video.id === videoItem.id ? newVideos : [...newVideos, video],
-        [])
+      videos.filter(video => video.id !== videoItem.id)
     )
   }
 
