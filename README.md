@@ -4,6 +4,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 * [General info](#general-info)
 * [How to use](#how-to-use)
+* [Technologies](#technologies)
 * [Setup](#setup)
 
 
@@ -18,6 +19,15 @@ Application allows user to create his own librabry of his favorite Youtube and V
 - Insert a video ID or video URL into the search field
 - Search for the video by clicking "Search" button or pressing enter
 - Manage your videos using the available options
+
+### Technologies
+
+- React.js
+- Typescript
+- Sass
+- Axios
+- Reactstrap
+- Local Storage
 
 ### Setup
 
