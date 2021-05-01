@@ -12,7 +12,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Application allows user to create his own librabry of his favorite Youtube and Vimeo videos
 
-### How to use
+## How to use
 
 - Open [https://soseen.github.io/youtube-favorites]
 - Choose a video source
@@ -20,7 +20,7 @@ Application allows user to create his own librabry of his favorite Youtube and V
 - Search for the video by clicking "Search" button or pressing enter
 - Manage your videos using the available options
 
-### Technologies
+## Technologies
 
 - React.js
 - Typescript
@@ -29,18 +29,18 @@ Application allows user to create his own librabry of his favorite Youtube and V
 - Reactstrap
 - Local Storage
 
-### Setup
+## Setup
 
-## `npm start`
+#### `npm start`
 
 Runs the app in the development mode.
 Open http://localhost:3000 to view it in the browser.
 
-## `npm install`
+#### `npm install`
 
 Install all the required packages included in the `package.json` file
 
-## `npm run build`
+#### `npm run build`
 
 Builds the app for production to the build folder.
 It correctly bundles React in production mode and optimizes the build for the best performance.
