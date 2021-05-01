@@ -26,6 +26,10 @@ Application allows user to create his own librabry of his favorite Youtube and V
 Runs the app in the development mode.
 Open http://localhost:3000 to view it in the browser.
 
+## `npm install`
+
+Install all the required packages included in the `package.json` file
+
 ## `npm run build`
 
 Builds the app for production to the build folder.
